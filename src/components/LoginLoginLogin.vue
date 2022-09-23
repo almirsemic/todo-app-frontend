@@ -1,75 +1,54 @@
 <template>
-  <div class="body">
-    <input type="radio" name="a1" id="chk1" style="display: none;">
-    <input type="radio" name="a1" id="chk2" style="display: none;">
-    <div class="box">
-      <div class="a">
-        <h6 class="title mt-5">TODO LIST</h6>
-        <label for="chk1">Login</label>
-        <label for="chk2" id="sup">Register</label>
+  <div class="bg-secondary">
+      <div class="d-flex justify-content-center align-items-center w-50 h-100 vh-100 container">
+        <div class="row">
+          <div class="col-12 text-center mb-5">
+            <p class="h1 text-white">TO LIST</p>
+          </div>
+           <div class="col-12 justify-content-center align-items-center d-flex p-5 bg-white" >
+            <ValidationObserver v-slot="{ handleSubmit }">
+              <form  @submit.prevent="handleSubmit(submitForm)">
+                <validation-provider rules="required" v-slot="{ errors }">
+                  <h4 class="my-4">Login</h4>
+                <input type="text" v-model="state.username" placeholder="Username" class="form-control">
+                <p class="error-msg text-danger">{{ errors[0] }}</p>
+              </validation-provider>
+              <validation-provider rules="required" v-slot="{ errors }">
+                <input type="password" v-model="state.password" placeholder="Password" class="form-control">
+                <p class="error-msg text-danger">{{ errors[0] }}</p>
+                <input type="submit" value="Login" class="btn btn-primary btn-block mb-4">
+              </validation-provider>
+              </form>
+            </ValidationObserver>
+           </div>
       </div>
-      <div class="b">
-        <form action="" class="frm">
-          <br><br><br>
-          <h6 class="title">Register</h6>
-          <input type="text" placeholder="Username">
-          <input type="password" placeholder="Password">
-          <input type="password" placeholder="Password Confirm">
-          <input type="button" value="Sign up" id="btn">
-          <label for="chk1" id="btm">Login Here</label>
-        </form>
-      </div>
-      <div class="c">
-        <form action="" @submit.prevent="submitForm" class="frm">
-          <br><br><br><br>
-          <h6 class="title">Login</h6>
-          <input type="text"  v-model="state.username" placeholder="Username">
-          <div class="input-errors" v-for="error of v$.state.username.$errors" :key="error.$uid">
-          <div class="error-msg">{{ error.$message }}</div>
-          </div> 
-          <input type="password" v-model="state.password" placeholder="Password">
-          <div class="input-errors" v-for="error of v$.state.password.$errors" :key="error.$uid">
-          <div class="error-msg">{{ error.$message }}</div>
-          </div> 
-          <input type="submit" value="Login" id="btn">
-          <label for="chk2" id="btm">Register Here</label>
-        </form>
-      </div>
-      <div class="d"></div>
-      <div class="e"></div>
     </div>
   </div>
 </template>
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
-import { useVuelidate } from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
-import { reactive } from  'vue' // "from '@vue/composition-api'" if you are using Vue 2.x
-
+import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
+import { required } from "vee-validate/dist/rules";
+extend("required", {
+  ...required,
+  message: "This field is required !",
+});
 export default {
- setup () {
-    const state = reactive({
-      username: '',
-      password: '',
-    })
-    const rules = {
-      username: { required }, // Matches state.firstName
-      password: { required }, // Matches state.lastName
-    }
-    const v$ = useVuelidate(rules, state)
-    return { state, v$ }
-  }, 
-  validations () {
-    return {
-      username: { required }, // Matches this.firstName
-      password: { required }, // Matches this.lastName
-    }
+  components: {
+    ValidationProvider,
+    ValidationObserver
   },
- 
+  setup() {
+    const state = {
+      username: "",
+      password: "",
+    };
+    return { state };
+  },
   methods: {
     async submitForm() {
-      try {    
+      try {
         const formData = {
           username: this.state.username,
           password: this.state.password,
@@ -80,7 +59,9 @@ export default {
         this.$store.dispatch("userToken", localStorage.getItem("user-token"));
         this.$router.push("/").catch(() => {});
       } catch (error) {
-         console.error(error)
+        this.$toastr.defaultPosition = "toast-top-right";
+        this.$toastr.e("Incorrect username or password !!!");
+        console.error(error);
         return;
       }
     },
@@ -90,116 +71,4 @@ export default {
   },
 };
 </script>
-<style scoped>
-*{
-  padding: 0px;
-  margin: 0px;
-  box-sizing: border-box;
-  font-family: sans-serif;
-  transition: 1s ease;
-}
-.body{
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: rgb(231, 224, 224);
-  position: absolute;
-}
-.box{
-  position: absolute;
-  width: 350px;
-  height: 500px;
-  background: none;
-  left: calc(50% - 175px);
-  top: calc(50% - 250px);
-  transform-style: preserve-3d;
-}
-.box div{
-  width: 350px;
-  height: 500px;
-  position: absolute;
-  background-image: radial-gradient(#fff, rgb(231, 224, 224));
-  box-shadow: 0px 0px 5px rgb(231, 224, 224), 0px 0px 30px rgb(231, 224, 224),
-  inset 0px 0px 5px rgb(231, 224, 224), inset 0px 0px 30px rgb(231, 224, 224);
-  border: 3px solid white;
-}
-.box div:nth-child(5){
-  height: 350px;
-  box-shadow:  0px 0px 10px rgb(231, 224, 224), 0px 0px 30px rgb(231, 224, 224);
-}
-.a{transform: rotateY(0deg) translateZ(175px);}
-.b{transform: rotateY(90deg) translateZ(175px);}
-.c{transform: rotateY(180deg) translateZ(175px);}
-.d{transform: rotateY(270deg) translateZ(175px);}
-.e{transform: rotateX(-90deg) translateZ(325px);}
-.a label{
-  position: relative;
-  width: 200px;
-  left: 72px;
-  top: 170px;
-  color: white;
-  font-size: 20px;
-  height: 50px;
-  line-height: 50px;
-  margin: 20px 0px;
-  text-align: center;
-  display: block;
-  background-image: linear-gradient(45deg, #8000ff, #ff00c4);
-  border-radius: 25px;
-  box-shadow: 0px 0px 5px #ff44f8, 0px 0px 30px #ff44f8;
-  cursor: pointer;
-}
-#sup, #btn{
-  background-image: linear-gradient(45deg, #ff00c4, #8000ff);
-  color: white;
-  cursor: pointer;
-}
-#btn:focus{
-  width: calc(100% - 80px);
-  left: 40px;
-}
-.title{
-  width: 100%;
-  text-align: center;
-  line-height: 30px;
-  font-size: 30px;
-  font-weight: bold;
-  color: #8d006c;
-  text-shadow: 0px 0px 20px #ff00c4;
-  position: absolute;
-}
-.frm input{
-  position: relative;
-  width:  calc(100% - 80px);
-  left: 40px;
-  display: block;
-  text-align: center;
-  line-height: 40px;
-  top: 60px;
-  background: none;
-  outline: none;
-  border: none;
-  border-radius: 25px;
-  box-shadow: 0px 0px 5px #ff44f8, 0px 0px 30px #ff44f8;
-  margin: 20px 0px;
-  font-size: 16px;
-}
-.frm input:focus{
-  width: calc(100% -40px);
-  left: 20px;
-  background: #ffcbf9;
-  box-shadow: 0px 0px 5px #000, 0px 0px 30px #c900b2;
-}
-#btm{
-  position: absolute;
-  bottom: 20px;
-  font-size: 20px;
-  color: #720058;
-  text-align: center;
-  width: 100%;
-  cursor: pointer;
-}
-#chk1:checked ~ .box{transform:  rotateY(-180deg);}
-#chk2:checked ~ .box{transform:  rotateY( -89.99deg);}
-</style>
+
