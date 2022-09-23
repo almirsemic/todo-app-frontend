@@ -53,11 +53,11 @@ export default {
           username: this.state.username,
           password: this.state.password,
         };
-        const TOKEN = await axios.post("/api/token/", formData);
-        localStorage.setItem("user-token", TOKEN.data.access);
-        localStorage.setItem("username", this.state.username);
-        this.$store.dispatch("userToken", localStorage.getItem("user-token"));
-        this.$router.push("/").catch(() => {});
+        const TOKEN = await axios.post('/api/token/', formData);
+        localStorage.setItem('user-token', TOKEN.data.access);
+        localStorage.setItem('username', this.state.username);
+        this.$store.dispatch('userToken', localStorage.getItem('user-token'));
+        this.$router.push('/').catch(() => {});
       } catch (error) {
         this.$toastr.defaultPosition = "toast-top-right";
         this.$toastr.e("Incorrect username or password !!!");
@@ -66,9 +66,11 @@ export default {
       }
     },
   },
+  components: {
+    ValidationProvider
+  },
   computed: {
-    ...mapGetters(["userToken"]),
+    ...mapGetters(['userToken']),
   },
 };
 </script>
-
