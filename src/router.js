@@ -5,22 +5,18 @@ import LoginLoginLogin from "./components/LoginLoginLogin";
 import HomePage from "./components/HomePage";
 
 const routes = [
-    {
-		path: '/login',
-		name: 'login',
-		component: LoginLoginLogin,
-		meta: {
-			requiresNonAuthenticatedState: true
-		}
-	},
-	{
-		path: '/',
-        name: 'home',
-		component: HomePage,
-		meta: {
-			requiresAuth: true
-		}
-	}
+  {
+    path: '/login',
+	name: 'login',
+	component: LoginLoginLogin,
+	meta: { requiresNonAuthenticatedState: true }
+  },
+  {
+    path: '/',
+    name: 'home',
+	component: HomePage,
+	meta: {	requiresAuth: true }
+  }
 ];
 
 Vue.use(VueRouter);
