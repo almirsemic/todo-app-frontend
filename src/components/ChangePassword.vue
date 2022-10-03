@@ -6,36 +6,33 @@
                     <div class="card shadow-2-strong" style="border-radius: 1rem;">
                         <div class="card-body p-5 text-center">
                             <ValidationObserver v-slot="{ handleSubmit }">
-                                <form @submit.prevent="handleSubmit(changePassword)">
-                                    <h3 class="mb-5">Change Password</h3>
-                                    <div class="form-outline mb-4">
-                                        <validation-provider rules="required" v-slot="{ errors }">
-                                            <label class="form-label">Old Password</label>
-                                            <input type="password" class="form-control form-control-lg"
-                                                v-model="oldPassword" />
-                                            <p class="error-msg text-danger">{{ errors[0] }}</p>
-                                        </validation-provider>
-                                    </div>
-                                    <div class="form-outline mb-4">
-                                        <validation-provider rules="required" v-slot="{ errors }">
-                                            <label class="form-label">New Password</label>
-                                            <input type="password" class="form-control form-control-lg"
-                                                v-model="newPassword" />
-                                            <p class="error-msg text-danger">{{ errors[0] }}</p>
-                                        </validation-provider>
-                                    </div>
-                                    <div class="form-outline mb-4">
-                                        <validation-provider rules="required" v-slot="{ errors }">
-                                            <label class="form-label">Confirm Password</label>
-                                            <input type="password" class="form-control form-control-lg"
-                                                v-model="confirmPassword" />
-                                            <p class="error-msg text-danger">{{ errors[0] }}</p>
-                                        </validation-provider>
-                                    </div>
-                                    <button class="btn btn-primary btn-lg btn-block px-2" type="submit">Change
-                                        Password</button>
-                                </form>
-                            </ValidationObserver>
+                            <form @submit.prevent="handleSubmit(changePassword)">
+                                <h3 class="mb-5">Change Password</h3>
+                                <div class="form-outline mb-4">
+                                    <validation-provider rules="required" v-slot="{ errors }">
+                                    <label class="form-label">Old Password</label>
+                                    <input type="password" class="form-control form-control-lg" v-model="oldPassword" />
+                                    <p class="error-msg text-danger">{{ errors[0] }}</p>
+                                </validation-provider>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <validation-provider  rules="required|min:8" name="confirm" v-slot="{ errors }"> 
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" class="form-control form-control-lg" v-model="newPassword" />
+                                    <p class="error-msg text-danger">{{ errors[0] }}</p>
+                                </validation-provider>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <validation-provider rules="required|password:@confirm"  v-slot="{ errors }">
+                                    <label class="form-label">Confirm Password</label>
+                                    <input type="password" class="form-control form-control-lg" v-model="confirmPassword" />
+                                    <p class="error-msg text-danger">{{ errors[0] }}</p>
+                                </validation-provider>
+                                </div>
+                                <button class="btn btn-primary btn-lg btn-block px-2" type="submit">Change
+                                    Password</button>
+                            </form>
+                        </ValidationObserver>
                             <router-link to="/"><button
                                     class="btn btn-light btn-lg btn-block border border-1 my-1 px-4">Back to
                                     Home</button></router-link>
@@ -50,16 +47,27 @@
 import axios from "axios"
 import { mapGetters } from "vuex";
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
-import { required } from "vee-validate/dist/rules";
+import { required, min } from "vee-validate/dist/rules";
 extend("required", {
-    ...required,
-    message: "This field is required !",
+  ...required,
+  message: "This field is required !",
 });
+extend('password', {
+  params: ['target'],
+  validate(value, { target }) {
+    return value === target;
+  },
+  message: 'Password confirmation does not match'
+});
+extend('min', {
+    ...min,
+    message: 'This field must have greater at 7 characters'
+})
 export default {
     components: {
-        ValidationProvider,
-        ValidationObserver
-    },
+    ValidationProvider,
+    ValidationObserver
+  },
     data() {
         return {
             oldPassword: '',
@@ -69,7 +77,6 @@ export default {
     },
     methods: {
         async changePassword() {
-            if (this.newPassword === this.confirmPassword) {
                 try {
                     const article = {
                         old_password: this.oldPassword,
@@ -88,17 +95,11 @@ export default {
                         })
                 } catch (error) {
                     this.$toastr.defaultPosition = "toast-top-right";
-                    this.$toastr.e("You entered the wrong old password, please try again!");
+                    this.$toastr.e("lnvalid old password, please try again!");
                     this.oldPassword = ''
                     console.error(error)
                     return
                 }
-            } else {
-                this.$toastr.defaultPosition = "toast-top-right";
-                this.$toastr.e("Passwords do not match, please try again!");
-                this.newPassword = ''
-                this.confirmPassword = ''
-            }
         }
     },
     computed: {
