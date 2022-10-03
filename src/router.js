@@ -3,6 +3,7 @@ import Vue from "vue";
 import store from "./vuex" 
 import LoginLoginLogin from "./components/LoginLoginLogin";
 import HomePage from "./components/HomePage";
+import ChangePassword from "./components/ChangePassword";
 
 const routes = [
   {
@@ -16,6 +17,12 @@ const routes = [
     name: 'home',
 	component: HomePage,
 	meta: {	requiresAuth: true }
+  },
+  {
+	path: '/change/password',
+	name: 'changePassword',
+	component: ChangePassword,
+	meta: {requiresAuth: true }
   }
 ];
 

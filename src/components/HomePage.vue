@@ -2,8 +2,12 @@
   <div>
     <div class="d-flex justify-content-center mt-5">
       What's up<h5 class="text-uppercase ms-2">{{ username }}</h5>
-      <button @click="logout()" type="button"
-        class="btn btn-danger position-absolute top-0 end-0 mt-2 mx-2">Logout</button>
+      <div class="position-absolute top-0 end-0 mt-2 mx-2">
+        <b-dropdown id="dropdown-right" right text="Profile" variant="primary" class="m-2">
+          <b-dropdown-item href="/change/password">Change Password</b-dropdown-item>
+          <b-dropdown-item @click="logout()">Logout</b-dropdown-item>
+        </b-dropdown>
+      </div>
     </div>
     <div class="container mt-5 border border-1 w-50 ">
       <section>
@@ -41,7 +45,8 @@
               </div>
             </div>
           </div>
-          <div v-if="todoDetails.length == 0" class="text-center text-danger">You todo list is empty please add something.</div>
+          <div v-if="todoDetails.length == 0" class="text-center text-danger">You todo list is empty please add
+            something.</div>
         </div>
       </section>
     </div>
