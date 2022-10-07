@@ -1,13 +1,12 @@
 <template>
   <div>
     <div class="d-flex justify-content-center mt-5">
-      What's up<h5 class="text-uppercase ms-2">{{ username }}</h5>
-      <div class="position-absolute top-0 end-0 mt-2 mx-2">
-        <b-dropdown id="dropdown-right" right text="Profile" variant="primary" class="m-2">
+     <p class="mt-3"> What's up</p>
+        <b-dropdown id="dropdown-right" :text="username" variant="transparent border-0" class="m-2">
           <b-dropdown-item href="/change/password">Change Password</b-dropdown-item>
+          <b-dropdown-item href="/edit/profile">Edit Profile</b-dropdown-item>
           <b-dropdown-item @click="logout()">Logout</b-dropdown-item>
         </b-dropdown>
-      </div>
     </div>
     <div class="container mt-5 border border-1 w-50 ">
       <section>
@@ -77,7 +76,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      username: localStorage.getItem("username"),
+      username: localStorage.getItem("username").toUpperCase(),
       selected: null,
       name: '',
       description: '',

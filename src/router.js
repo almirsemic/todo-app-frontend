@@ -4,6 +4,7 @@ import store from "./vuex"
 import LoginLoginLogin from "./components/LoginLoginLogin";
 import HomePage from "./components/HomePage";
 import ChangePassword from "./components/ChangePassword";
+import UserProfile from "./components/UserProfile";
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
 	path: '/change/password',
 	name: 'changePassword',
 	component: ChangePassword,
+	meta: {requiresAuth: true }
+  },
+  {
+	path: '/edit/profile',
+	name: 'UserProfile',
+	component: UserProfile,
 	meta: {requiresAuth: true }
   }
 ];
